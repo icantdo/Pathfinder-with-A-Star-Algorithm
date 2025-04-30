@@ -37,7 +37,7 @@ def solve_maze(start, end, height, width, grid, barriers):
                     heapq.heappush(open_set, (f_score[neighbor], neighbor))
     return None
 
-def display_maze(grid, width, height, path=None):
+def display_maze(grid, width, height, path=None, barriers=None, start=None, end=None):
     fig, ax = plt.subplots(figsize=(width, height))
 
     for y in range(height):
@@ -50,6 +50,15 @@ def display_maze(grid, width, height, path=None):
                 ax.plot([x, x - 1], [y, y], 'k-')
             if not grid[y][x]['walls']['E']:
                 ax.plot([x, x + 1], [y, y], 'k-')
+    if barriers:
+        for x, y in barriers:
+            plt.plot(x, y, 'ro')
+            plt.text(x,y, 'barrier', fontsize=12, color='gray', ha='left', va='bottom')
+
+    plt.scatter(start[0], start[1], color='green', s=100, label='Start')
+    plt.scatter(end[0], end[1], color='yellow', s=100, label='End')
+    plt.legend()
+
 
     if path:
         px, py = zip(*path)
@@ -111,7 +120,8 @@ grid = [ # y = 0
 
 
 start, end = (0, 0), (2,4)
-display_maze(grid, width=6, height=6)
-path = solve_maze(start, end, height=6, width=6, grid=grid , barriers= [(1, 0)])
-display_maze(grid, width=6, height=6, path=path)
+barriers = [(1, 0)]
+display_maze(grid, width=6, height=6, barriers= barriers, start=start,end=end)
+path = solve_maze(start, end, height=6, width=6, grid=grid , barriers= barriers)
+display_maze(grid, width=6, height=6, path=path, barriers=barriers,start=start,end=end)
 print(path)
